@@ -75,7 +75,7 @@ public class AssociationService
         {
             if (!IsUpdateNeeded(association, associationDTO))
             {
-                Console.WriteLine("Association already exists.");
+                Console.WriteLine("Already updated.");
                 errorMessages.Add("Already updated.");
                 return false;
             }
