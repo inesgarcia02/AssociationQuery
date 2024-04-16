@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Model
 {
-    public class Period
+    public class Period :IPeriod
     {
         public long Id { get; set; }
         private DateOnly _startDate;
