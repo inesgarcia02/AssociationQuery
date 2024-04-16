@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 namespace WebApi.Controllers
 {
-    public class RabbitMQAssociationConsumerController : IRabbitMQAssociationConsumerController
+    public class RabbitMQAssociationCConsumerController : IRabbitMQAssociationCConsumerController
     {
         private List<string> _errorMessages = new List<string>();
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -14,23 +14,23 @@ namespace WebApi.Controllers
         private readonly IModel _channel;
         private readonly string _queueName;
 
-        public RabbitMQAssociationConsumerController(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQAssociationCConsumerController(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _factory = new ConnectionFactory { HostName = "localhost" };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.ExchangeDeclare(exchange: "associationLogs", type: ExchangeType.Fanout);
+            _channel.ExchangeDeclare(exchange: "associationCreated", type: ExchangeType.Fanout);
 
-            _queueName = _channel.QueueDeclare(queue: "associationQ",
+            _queueName = _channel.QueueDeclare(queue: "associationC",
                                             durable: true,
                                             exclusive: false,
                                             autoDelete: false,
                                             arguments: null).QueueName;
 
             _channel.QueueBind(queue: _queueName,
-                  exchange: "associationLogs",
+                  exchange: "associationCreated",
                   routingKey: string.Empty);
 
             Console.WriteLine(" [*] Waiting for messages from Association.");
@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         public void StartConsuming()
         {
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (model, ea) =>
+            consumer.Received +=  async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);

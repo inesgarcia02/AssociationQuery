@@ -73,16 +73,16 @@ public class AssociationService
 
         if (association != null)
         {
-            // if (!IsUpdateNeeded(association, associationDTO))
-            // {
-            //     Console.WriteLine("Association already exists.");
-            //     errorMessages.Add("Already updated.");
-            //     return false;
-            // }
+            if (!IsUpdateNeeded(association, associationDTO))
+            {
+                Console.WriteLine("Association already exists.");
+                errorMessages.Add("Already updated.");
+                return false;
+            }
 
             AssociationDTO.UpdateToDomain(association, associationDTO);
 
-            Association associationMod = await _associationRepository.Update(association, errorMessages);
+            await _associationRepository.Update(association, errorMessages);
 
             return true;
         }
@@ -107,17 +107,11 @@ public class AssociationService
 
     private async Task<bool> VerifyAssociation(AssociationDTO associationDTO, List<string> errorMessages)
     {
-        Association asso = await _associationRepository.GetAssociationsByIdAsync(associationDTO.Id);
-        if (asso != null)
+        bool aExists = await _associationRepository.AssociationExists(associationDTO.Id);
+        if (aExists)
         {
-            if (IsUpdateNeeded(asso, associationDTO))
-            {
-                await Update(associationDTO.Id, associationDTO, errorMessages);
-            }
-            else {
-                Console.WriteLine("Association already exists.");
-                errorMessages.Add("Association already exists.");
-            }
+            Console.WriteLine("Association already exists.");
+            errorMessages.Add("Association already exists.");
             return false;
         }
 
@@ -173,25 +167,4 @@ public class AssociationService
 
         return false;
     }
-
-
-    // public async Task<bool> Update(long id, AssociationDTO AssociacaoDTO, List<string> errorMessages)
-    // {
-    //     Holiday holiday = await _associacaoRepository.GetHolidayByIdAsync(id);
-
-    //     if(holiday!=null)
-    //     {
-    //         AssociationDTO.UpdateToDomain(holiday, AssociacaoDTO);
-
-    //         await _associacaoRepository.Update(holiday, errorMessages);
-
-    //         return true;
-    //     }
-    //     else
-    //     {
-    //         errorMessages.Add("Not found");
-
-    //         return false;
-    //     }
-    // }
 }
