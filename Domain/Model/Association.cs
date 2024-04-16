@@ -44,6 +44,13 @@ namespace Domain.Model
         }
 
 
+        public void UpdatePeriod(DateOnly startDate, DateOnly endDate)
+        {
+            _period.UpdateStartDate(startDate);
+            _period.UpdateEndDate(endDate);
+        }
+
+
         public bool IsColaboratorInAssociation(long colaboratorId)
         {
             if (colaboratorId.Equals(_colaboratorId))

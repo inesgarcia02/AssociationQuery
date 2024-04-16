@@ -48,4 +48,13 @@ public class AssociationDTO
 
         return association;
     }
+
+
+    static public Association UpdateToDomain(Association association, AssociationDTO associationDTO) {
+	
+		association.UpdatePeriod(associationDTO.StartDate, associationDTO.EndDate);
+
+		return association;
+
+	}
 }

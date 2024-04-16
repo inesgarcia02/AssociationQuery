@@ -77,6 +77,42 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
         }
     }
 
+    public async Task<Association> Update(Association association, List<string> errorMessages)
+    {
+        try {
+            AssociationDataModel associationDataModel = await _context.Set<AssociationDataModel>()
+                    .Include(a => a.Period)
+                    .FirstAsync(a => a.Id==association.Id);
+
+            _associationMapper.UpdateDataModel(associationDataModel, association);
+
+            _context.Entry(associationDataModel).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return association;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await AssociationExists(association.Id))
+            {
+                errorMessages.Add("Not found");
+                
+                return null;
+            }
+            else
+            {
+                throw;
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
     public async Task<bool> AssociationExists(long id)
     {
         return await _context.Set<AssociationDataModel>().AnyAsync(h => h.Id == id);

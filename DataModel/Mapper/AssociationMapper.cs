@@ -43,4 +43,14 @@ public class AssociationMapper
 
         return associationDataModel;
     }
+
+    public bool UpdateDataModel(AssociationDataModel associationDataModel, Association associationDomain)
+    {
+        // pode ser necessário mais atualizações, e com isso o retorno não ser sempre true
+        // contudo, porque associationDataModel está a ser gerido pelo DbContext, para atualizarmos a DB, é este que tem de ser alterado, e não criar um novo
+
+        associationDataModel.Period.StartDate = associationDomain.StartDate;
+        associationDataModel.Period.EndDate = associationDomain.EndDate;
+        return true;
+    }
 }

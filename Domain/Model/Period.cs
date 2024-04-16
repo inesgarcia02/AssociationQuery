@@ -41,5 +41,15 @@ namespace Domain.Model
             }
             return true;
         }
+
+        public void UpdateStartDate(DateOnly startDate)
+        {
+            _startDate = startDate;
+        }
+
+        public void UpdateEndDate(DateOnly endDate)
+        {
+            _endDate = endDate;
+        }
     }
 }
