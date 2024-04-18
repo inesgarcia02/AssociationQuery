@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
-    public interface IRabbitMQAssociationUConsumerController
+    public interface IRabbitMQAssociationConsumerController
     {
         public void StartConsuming();
+        void ConfigQueue(string queueName);
     }
 }

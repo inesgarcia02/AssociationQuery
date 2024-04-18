@@ -10,6 +10,12 @@ using WebApi.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var config = builder.Configuration;
+var associationQueueName = config["AssociationQueues:" + args[0]];
+var projectQueueName = config["ProjectQueues:" + args[0]];
+var colaboratorQueueName = config["ColaboratorQueues:" + args[0]];
+
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -22,6 +28,7 @@ builder.Services.AddDbContext<AbsanteeContext>(opt =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(opt =>
     opt.MapType<DateOnly>(() => new OpenApiSchema
     {
@@ -35,7 +42,6 @@ builder.Services.AddTransient<IAssociationRepository, AssociationRepository>();
 builder.Services.AddTransient<IAssociationFactory, AssociationFactory>();
 builder.Services.AddTransient<AssociationMapper>();
 builder.Services.AddTransient<AssociationService>();
-
 
 //builder.Services.AddSingleton<IRabbitMQAssociationConsumerController, RabbitMQAssociationConsumerController>();
 builder.Services.AddTransient<IColaboratorsIdRepository, ColaboratorsIdRepository>();
@@ -55,8 +61,7 @@ builder.Services.AddTransient<ProjectService>();
 //     }
 // });
 
-builder.Services.AddSingleton<IRabbitMQAssociationCConsumerController, RabbitMQAssociationCConsumerController>();
-builder.Services.AddSingleton<IRabbitMQAssociationUConsumerController, RabbitMQAssociationUConsumerController>();
+builder.Services.AddSingleton<IRabbitMQAssociationConsumerController, RabbitMQAssociationConsumerController>();
 builder.Services.AddSingleton<IRabbitMQProjectConsumerController, RabbitMQProjectConsumerController>();
 builder.Services.AddSingleton<IRabbitMQColaboratorConsumerController, RabbitMQColaboratorConsumerController>();
 
@@ -73,12 +78,15 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-var rabbitMQAssociationCConsumerService = app.Services.GetRequiredService<IRabbitMQAssociationCConsumerController>();
-var rabbitMQAssociationUConsumerService = app.Services.GetRequiredService<IRabbitMQAssociationUConsumerController>();
+var rabbitMQAssociationCConsumerService = app.Services.GetRequiredService<IRabbitMQAssociationConsumerController>();
 var rabbitMQProjectConsumerService = app.Services.GetRequiredService<IRabbitMQProjectConsumerController>();
 var rabbitMQColaboratorService = app.Services.GetRequiredService<IRabbitMQColaboratorConsumerController>();
+
+rabbitMQAssociationCConsumerService.ConfigQueue(associationQueueName);
+rabbitMQProjectConsumerService.ConfigQueue(projectQueueName);
+rabbitMQColaboratorService.ConfigQueue(colaboratorQueueName);
+
 rabbitMQAssociationCConsumerService.StartConsuming();
-rabbitMQAssociationUConsumerService.StartConsuming();
 rabbitMQProjectConsumerService.StartConsuming();
 rabbitMQColaboratorService.StartConsuming();
 

@@ -28,5 +28,10 @@ namespace Domain.Model
             _startDate = startDate;
             _endDate = endDate;
         }
+
+        public Project(long id)
+        {
+            Id = id;
+        }
     }
 }

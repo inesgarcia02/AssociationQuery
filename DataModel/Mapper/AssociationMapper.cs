@@ -9,15 +9,19 @@ using Domain.IRepository;
 public class AssociationMapper
 {
     private IAssociationFactory _associationFactory;
+    private IColaboratorsIdRepository _colaboratorRepository;
+    private IProjectRepository _projectRepository;
 
-    public AssociationMapper(IAssociationFactory associationFactory)
+    public AssociationMapper(IAssociationFactory associationFactory, IColaboratorsIdRepository colaboratorRepository, IProjectRepository projectRepository)
     {
         _associationFactory = associationFactory;
+        _colaboratorRepository = colaboratorRepository;
+        _projectRepository = projectRepository;
     }
 
     public Association ToDomain(AssociationDataModel associationDM)
     {
-        Association associationDomain = _associationFactory.NewAssociation(associationDM.ColaboratorId, associationDM.ProjectId, 
+        Association associationDomain = _associationFactory.NewAssociation(associationDM.ColaboratorId.Id, associationDM.Project.Id, 
                                                     associationDM.Period!.StartDate,associationDM.Period.EndDate);
         associationDomain.Id = associationDM.Id;
         return associationDomain;
@@ -37,20 +41,10 @@ public class AssociationMapper
         return associationsDomain.AsEnumerable();
     }
 
-    public AssociationDataModel ToDataModel(Association Association)
+    public AssociationDataModel ToDataModel(Association association, ProjectDataModel project, ColaboratorsIdDataModel colaborator)
     {
-        AssociationDataModel associationDataModel = new AssociationDataModel(Association);
+        AssociationDataModel associationDataModel = new AssociationDataModel(association, project, colaborator);
 
         return associationDataModel;
-    }
-
-    public bool UpdateDataModel(AssociationDataModel associationDataModel, Association associationDomain)
-    {
-        // pode ser necessário mais atualizações, e com isso o retorno não ser sempre true
-        // contudo, porque associationDataModel está a ser gerido pelo DbContext, para atualizarmos a DB, é este que tem de ser alterado, e não criar um novo
-
-        associationDataModel.Period.StartDate = associationDomain.StartDate;
-        associationDataModel.Period.EndDate = associationDomain.EndDate;
-        return true;
     }
 }

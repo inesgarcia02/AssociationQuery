@@ -57,55 +57,24 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
     {
         try
         {
-            AssociationDataModel associationDataModel = _associationMapper.ToDataModel(association);
+            ProjectDataModel projectDataModel = await _context.Set<ProjectDataModel>()
+                .FirstAsync(p => p.Id == association.ProjectId);
+            
+            ColaboratorsIdDataModel colaboratorDataModel = await _context.Set<ColaboratorsIdDataModel>()
+                .FirstAsync(c => c.Id == association.ColaboratorId);
+
+            AssociationDataModel associationDataModel = _associationMapper.ToDataModel(association, projectDataModel, colaboratorDataModel);
 
             EntityEntry<AssociationDataModel> associationDataModelEntityEntry = _context.Set<AssociationDataModel>().Add(associationDataModel);
 
             await _context.SaveChangesAsync();
 
-            
 
             AssociationDataModel associationDataModelSaved = associationDataModelEntityEntry.Entity;
 
             Association associationSaved = _associationMapper.ToDomain(associationDataModelSaved);
 
             return associationSaved;
-        }
-        catch
-        {
-            throw;
-        }
-    }
-
-    public async Task<Association> Update(Association association, List<string> errorMessages)
-    {
-        try {
-            AssociationDataModel associationDataModel = await _context.Set<AssociationDataModel>()
-                    .Include(a => a.Period)
-                    .FirstAsync(a => a.Id==association.Id);
-
-            _associationMapper.UpdateDataModel(associationDataModel, association);
-
-            _context.Entry(associationDataModel).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return association;
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await AssociationExists(association.Id))
-            {
-                errorMessages.Add("Not found");
-                
-                return null;
-            }
-            else
-            {
-                throw;
-            }
-
-            return null;
         }
         catch
         {

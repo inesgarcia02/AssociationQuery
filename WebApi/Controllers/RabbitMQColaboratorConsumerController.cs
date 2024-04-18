@@ -12,7 +12,7 @@ namespace WebApi.Controllers
         private readonly ConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly string _queueName;
+        private string _queueName;
 
         public RabbitMQColaboratorConsumerController(IServiceScopeFactory serviceScopeFactory)
         {
@@ -23,17 +23,22 @@ namespace WebApi.Controllers
 
             _channel.ExchangeDeclare(exchange: "colab_logs", type: ExchangeType.Fanout);
 
-            _queueName = _channel.QueueDeclare(queue: "colaboratorQ",
+            Console.WriteLine(" [*] Waiting for messages from Colaborator.");
+        }
+
+        public void ConfigQueue(string queueName)
+        {
+            _queueName = queueName;
+
+            _channel.QueueDeclare(queue: _queueName,
                                             durable: true,
                                             exclusive: false,
                                             autoDelete: false,
-                                            arguments: null).QueueName;
+                                            arguments: null);
 
             _channel.QueueBind(queue: _queueName,
-            exchange: "colab_logs",
-            routingKey: string.Empty);
-
-            Console.WriteLine(" [*] Waiting for messages from Colaborator.");
+                  exchange: "colab_logs",
+                  routingKey: string.Empty);
         }
 
         public void StartConsuming()

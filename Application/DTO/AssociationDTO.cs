@@ -46,15 +46,8 @@ public class AssociationDTO
     {
         Association association = new Association(associationDTO.ColaboratorId, associationDTO.ProjectId, associationDTO.StartDate, associationDTO.EndDate);
 
+        association.Id = associationDTO.Id;
+        
         return association;
     }
-
-
-    static public Association UpdateToDomain(Association association, AssociationDTO associationDTO) {
-	
-		association.UpdatePeriod(associationDTO.StartDate, associationDTO.EndDate);
-
-		return association;
-
-	}
 }

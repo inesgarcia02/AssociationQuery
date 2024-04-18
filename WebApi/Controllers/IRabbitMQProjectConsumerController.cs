@@ -8,5 +8,6 @@ namespace WebApi.Controllers
     public interface IRabbitMQProjectConsumerController
     {
         public void StartConsuming();
+        void ConfigQueue(string queueName);
     }
 }
