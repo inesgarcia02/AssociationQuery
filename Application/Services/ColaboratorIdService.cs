@@ -1,4 +1,5 @@
 
+using Application.DTO;
 using Domain.IRepository;
 
 namespace Application.Services
@@ -12,10 +13,10 @@ namespace Application.Services
             _colaboratorsIdRepository = colaboratorsIdRepository;
         }
 
-        public async Task<long> Add(long colabId)
+        public async Task<long> Add(ColaboratorDTO colabId)
         {
 
-            return await _colaboratorsIdRepository.Add(colabId);
+            return await _colaboratorsIdRepository.Add(colabId.Id);
         }
     }
 }

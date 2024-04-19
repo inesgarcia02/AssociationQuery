@@ -44,16 +44,15 @@ namespace WebApi.Controllers
         public void StartConsuming()
         {
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received +=  async (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-
+                ColaboratorDTO colabDTO = ColaboratorAmqpDTO.Deserialize(message);
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var colaboratorService = scope.ServiceProvider.GetRequiredService<ColaboratorIdService>();
-                    message = message.Substring(34);
-                    await colaboratorService.Add(long.Parse(message));
+                    await colaboratorService.Add(colabDTO);
                 }
 
                 Console.WriteLine($" [x] Received {message}");
