@@ -9,7 +9,7 @@ namespace DataModel.Repository;
 
 public class AssociationRepository : GenericRepository<Association>, IAssociationRepository
 {
-   
+
     AssociationMapper _associationMapper;
 
     public AssociationRepository(AbsanteeContext context, AssociationMapper mapper) : base(context!)
@@ -22,7 +22,9 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
         try
         {
             IEnumerable<AssociationDataModel> associationsDataModel = await _context.Set<AssociationDataModel>()
-                .Include(x => x.Period)
+                    .Include(c => c.ColaboratorId)
+                    .Include(p => p.Project)
+                    .Include(x => x.Period)
                     .ToListAsync();
 
             IEnumerable<Association> associations = _associationMapper.ToDomain(associationsDataModel);
@@ -40,8 +42,10 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
         try
         {
             AssociationDataModel associationDataModel = await _context.Set<AssociationDataModel>()
-            .Include(x => x.Period)
-                .FirstAsync(a => a.Id == id);
+                    .Include(c => c.ColaboratorId)
+                    .Include(p => p.Project)
+                    .Include(x => x.Period)
+                    .FirstAsync(a => a.Id == id);
 
             Association association = _associationMapper.ToDomain(associationDataModel);
 
@@ -59,7 +63,7 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
         {
             ProjectDataModel projectDataModel = await _context.Set<ProjectDataModel>()
                 .FirstAsync(p => p.Id == association.ProjectId);
-            
+
             ColaboratorsIdDataModel colaboratorDataModel = await _context.Set<ColaboratorsIdDataModel>()
                 .FirstAsync(c => c.Id == association.ColaboratorId);
 
