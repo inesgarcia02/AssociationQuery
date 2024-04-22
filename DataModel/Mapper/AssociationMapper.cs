@@ -22,7 +22,7 @@ public class AssociationMapper
     public Association ToDomain(AssociationDataModel associationDM)
     {
         Association associationDomain = _associationFactory.NewAssociation(associationDM.ColaboratorId.Id, associationDM.Project.Id, 
-                                                    associationDM.Period!.StartDate,associationDM.Period.EndDate);
+                                                    associationDM.StartDate,associationDM.EndDate);
         associationDomain.Id = associationDM.Id;
         return associationDomain;
     }

@@ -24,7 +24,6 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
             IEnumerable<AssociationDataModel> associationsDataModel = await _context.Set<AssociationDataModel>()
                     .Include(c => c.ColaboratorId)
                     .Include(p => p.Project)
-                    .Include(x => x.Period)
                     .ToListAsync();
 
             IEnumerable<Association> associations = _associationMapper.ToDomain(associationsDataModel);
@@ -44,7 +43,6 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
             AssociationDataModel associationDataModel = await _context.Set<AssociationDataModel>()
                     .Include(c => c.ColaboratorId)
                     .Include(p => p.Project)
-                    .Include(x => x.Period)
                     .FirstAsync(a => a.Id == id);
 
             Association association = _associationMapper.ToDomain(associationDataModel);
