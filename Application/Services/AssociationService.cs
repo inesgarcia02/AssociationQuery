@@ -42,7 +42,7 @@ public class AssociationService
 
     public async Task<AssociationDTO> Add(AssociationDTO associationDTO, List<string> errorMessages)
     {
-        bool exists = VerifyAssociation(associationDTO, errorMessages).Result;
+        bool exists = await VerifyAssociation(associationDTO, errorMessages);
 
         if (!exists)
         {
@@ -92,7 +92,7 @@ public class AssociationService
             return false;
         }
 
-        if (!CheckDates(associationDTO).Result)
+        if (!await CheckDates(associationDTO))
         {
             Console.WriteLine("Association dates don't match with project.");
             errorMessages.Add("Association dates don't match with project.");
