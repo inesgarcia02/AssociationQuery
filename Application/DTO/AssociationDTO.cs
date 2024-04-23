@@ -8,23 +8,25 @@ public class AssociationDTO
     public long ProjectId { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    public bool Fundamental { get; set; }
 
 
     public AssociationDTO() { }
 
-    public AssociationDTO(long id, long colabId, long projectId, DateOnly startDate, DateOnly endDate)
+    public AssociationDTO(long id, long colabId, long projectId, DateOnly startDate, DateOnly endDate, bool fundamental)
     {
         Id = id;
         ColaboratorId = colabId;
         ProjectId = projectId;
         StartDate = startDate;
         EndDate = endDate;
+        Fundamental = fundamental;
     }
 
     static public AssociationDTO ToDTO(Association association)
     {
         AssociationDTO associationDTO = new AssociationDTO(association.Id, association.ColaboratorId, association.ProjectId,
-                                                             association.StartDate, association.EndDate);
+                                                             association.StartDate, association.EndDate, association.Fundamental);
         return associationDTO;
     }
 
@@ -44,7 +46,7 @@ public class AssociationDTO
 
     static public Association ToDomain(AssociationDTO associationDTO)
     {
-        Association association = new Association(associationDTO.ColaboratorId, associationDTO.ProjectId, associationDTO.StartDate, associationDTO.EndDate);
+        Association association = new Association(associationDTO.ColaboratorId, associationDTO.ProjectId, associationDTO.StartDate, associationDTO.EndDate, associationDTO.Fundamental);
 
         association.Id = associationDTO.Id;
         
