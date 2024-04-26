@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 namespace WebApi.Controllers
 {
-    public class RabbitMQAssociationConsumerController : IRabbitMQAssociationConsumerController
+    public class RabbitMQAssociationConsumerController : IRabbitMQConsumerController
     {
         private List<string> _errorMessages = new List<string>();
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -29,7 +29,7 @@ namespace WebApi.Controllers
 
         public void ConfigQueue(string queueName)
         {
-            _queueName = queueName;
+            _queueName = "association" + queueName;
 
             _channel.QueueDeclare(queue: _queueName,
                                             durable: true,

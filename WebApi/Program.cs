@@ -11,25 +11,22 @@ using WebApi.Controllers;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
-var associationQueueName = config["AssociationQueues:" + args[0]];
-var projectQueueName = config["ProjectQueues:" + args[0]];
-var colaboratorQueueName = config["ColaboratorQueues:" + args[0]];
+var queueName = config["Queues:" + args[0]];
 
-var port = GetPortForQueue(associationQueueName);
+var port = GetPortForQueue(queueName);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AbsanteeContext>(opt =>
     //opt.UseInMemoryDatabase("AbsanteeList")
     //opt.UseSqlite("Data Source=AbsanteeDatabase.sqlite")
-    opt.UseSqlite(Host.CreateApplicationBuilder().Configuration.GetConnectionString(associationQueueName))
+    opt.UseSqlite(Host.CreateApplicationBuilder().Configuration.GetConnectionString(queueName))
     );
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+
 builder.Services.AddSwaggerGen(opt =>
     opt.MapType<DateOnly>(() => new OpenApiSchema
     {
@@ -44,27 +41,17 @@ builder.Services.AddTransient<IAssociationFactory, AssociationFactory>();
 builder.Services.AddTransient<AssociationMapper>();
 builder.Services.AddTransient<AssociationService>();
 
-//builder.Services.AddSingleton<IRabbitMQAssociationConsumerController, RabbitMQAssociationConsumerController>();
 builder.Services.AddTransient<IColaboratorsIdRepository, ColaboratorsIdRepository>();
 builder.Services.AddTransient<ColaboratorsIdMapper>();
 builder.Services.AddTransient<ColaboratorIdService>();
+
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 builder.Services.AddTransient<ProjectMapper>();
 builder.Services.AddTransient<ProjectService>();
 
-// builder.Services.AddSingleton<IRabbitMQConsumerController>(sp =>
-// {
-//     using (var scope = sp.CreateScope())
-//     {
-//         var scopedServices = scope.ServiceProvider;
-//         var associationService = scopedServices.GetRequiredService<AssociationService>();
-//         return new RabbitMQConsumerController(associationService);
-//     }
-// });
-
-builder.Services.AddSingleton<IRabbitMQAssociationConsumerController, RabbitMQAssociationConsumerController>();
-builder.Services.AddSingleton<IRabbitMQProjectConsumerController, RabbitMQProjectConsumerController>();
-builder.Services.AddSingleton<IRabbitMQColaboratorConsumerController, RabbitMQColaboratorConsumerController>();
+builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationConsumerController>();
+builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQProjectConsumerController>();
+builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQColaboratorConsumerController>();
 
 var app = builder.Build();
 
@@ -79,17 +66,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-var rabbitMQAssociationCConsumerService = app.Services.GetRequiredService<IRabbitMQAssociationConsumerController>();
-var rabbitMQProjectConsumerService = app.Services.GetRequiredService<IRabbitMQProjectConsumerController>();
-var rabbitMQColaboratorService = app.Services.GetRequiredService<IRabbitMQColaboratorConsumerController>();
-
-rabbitMQAssociationCConsumerService.ConfigQueue(associationQueueName);
-rabbitMQProjectConsumerService.ConfigQueue(projectQueueName);
-rabbitMQColaboratorService.ConfigQueue(colaboratorQueueName);
-
-rabbitMQAssociationCConsumerService.StartConsuming();
-rabbitMQProjectConsumerService.StartConsuming();
-rabbitMQColaboratorService.StartConsuming();
+var rabbitMQConsumerServices = app.Services.GetServices<IRabbitMQConsumerController>();
+foreach (var service in rabbitMQConsumerServices)
+{
+    service.ConfigQueue(queueName);
+    service.StartConsuming();
+};
 
 app.MapControllers();
 
@@ -97,9 +79,7 @@ app.Run($"https://localhost:{port}");
 
 static int GetPortForQueue(string queueName)
 {
-    // Implement logic to map queue name to a unique port number
-    // Example: Assign a unique port number based on the queue name suffix
-    int basePort = 5040; // Start from port 5000
-    int queueIndex = int.Parse(queueName.Substring(2)); // Extract the numeric part of the queue name (assuming it starts with 'Q')
+    int basePort = 5040;
+    int queueIndex = int.Parse(queueName.Substring(2)); // Extract the numeric part of the queue name
     return basePort + queueIndex;
 }

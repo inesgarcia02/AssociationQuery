@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 namespace WebApi.Controllers
 {
-    public class RabbitMQProjectConsumerController : IRabbitMQProjectConsumerController
+    public class RabbitMQProjectConsumerController : IRabbitMQConsumerController
     {
         private List<string> _errorMessages = new List<string>();
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -28,7 +28,7 @@ namespace WebApi.Controllers
 
         public void ConfigQueue(string queueName)
         {
-            _queueName = queueName;
+            _queueName = "project" + queueName;
 
             _channel.QueueDeclare(queue: _queueName,
                                             durable: true,
@@ -44,7 +44,7 @@ namespace WebApi.Controllers
         public void StartConsuming()
         {
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received +=  async (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
