@@ -21,7 +21,7 @@ namespace WebApi.Controllers
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.ExchangeDeclare(exchange: "project", type: ExchangeType.Fanout);
+            _channel.ExchangeDeclare(exchange: "project_create", type: ExchangeType.Fanout);
 
             Console.WriteLine(" [*] Waiting for messages from Project.");
         }
@@ -37,7 +37,7 @@ namespace WebApi.Controllers
                                             arguments: null);
 
             _channel.QueueBind(queue: _queueName,
-                  exchange: "project",
+                  exchange: "project_create",
                   routingKey: string.Empty);
         }
 
