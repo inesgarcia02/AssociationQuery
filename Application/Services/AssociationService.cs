@@ -40,6 +40,19 @@ public class AssociationService
         return null;
     }
 
+        public async Task<IEnumerable<AssociationDTO>> GetByColabId(long id)
+    {
+        IEnumerable<Association> association = await _associationRepository.GetAssociationsByColabIdAsync(id);
+
+        if (association != null)
+        {
+            IEnumerable<AssociationDTO> associationDTO = AssociationDTO.ToDTO(association);
+
+            return associationDTO;
+        }
+        return null;
+    }
+
     public async Task<AssociationDTO> Add(AssociationDTO associationDTO, List<string> errorMessages)
     {
         bool exists = await VerifyAssociation(associationDTO, errorMessages);
