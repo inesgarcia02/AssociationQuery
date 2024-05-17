@@ -3,6 +3,7 @@ namespace Domain.Model
     public class Association : IAssociation
     {
         public long Id { get; set; }
+        private long _associationId;
         private long _colaboratorId;
         private long _projectId;
         private Period _period;
@@ -29,6 +30,11 @@ namespace Domain.Model
             get { return _projectId; }
         }
 
+        public long AssociationId
+        {
+            get { return _associationId; }
+        }
+
         public bool Fundamental
         {
             get { return _fundamental; }
@@ -36,14 +42,14 @@ namespace Domain.Model
 
         public Period Period { get { return _period; } set { _period = value; } }
 
-        public Association(long colaboratorId, long projectId, DateOnly periodStart, DateOnly periodEnd, bool fundamental)
+        public Association(long associationId, long colaboratorId, long projectId, DateOnly periodStart, DateOnly periodEnd, bool fundamental)
         {
+            _associationId = associationId;
             _colaboratorId = colaboratorId;
             _projectId = projectId;
             _period = new Period(periodStart, periodEnd);
             _fundamental = fundamental;
         }
-
 
         public void UpdatePeriod(DateOnly startDate, DateOnly endDate)
         {

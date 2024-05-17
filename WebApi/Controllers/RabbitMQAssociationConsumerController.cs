@@ -54,8 +54,16 @@ namespace WebApi.Controllers
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var associationService = scope.ServiceProvider.GetRequiredService<AssociationService>();
-
+                    List<string> errorMessages = new List<string>();
                     await associationService.Add(associationDTO, _errorMessages);
+                    if (errorMessages.Any())
+                    {
+                        Console.WriteLine($"Errors occurred while processing the message: {string.Join(", ", errorMessages)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Processed message successfully: {associationDTO}");
+                    }
                 }
 
                 Console.WriteLine($" [x] Received {message}");

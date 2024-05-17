@@ -19,9 +19,9 @@ public class AssociationMapper
         _projectRepository = projectRepository;
     }
 
-    public Association ToDomain(AssociationDataModel associationDM)
+   public Association ToDomain(AssociationDataModel associationDM)
     {
-        Association associationDomain = _associationFactory.NewAssociation(associationDM.ColaboratorId.Id, associationDM.Project.Id, 
+        Association associationDomain = _associationFactory.NewAssociation(associationDM.AssociationId ,associationDM.ColaboratorId.Id, associationDM.Project.Id, 
                                                     associationDM.StartDate,associationDM.EndDate, associationDM.Fundamental);
         associationDomain.Id = associationDM.Id;
         return associationDomain;

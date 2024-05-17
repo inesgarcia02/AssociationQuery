@@ -4,6 +4,7 @@ using Domain.Model;
 public class AssociationDTO
 {
     public long Id { get; set; }
+    public long AssociationId { get; set; }
     public long ColaboratorId { get; set; }
     public long ProjectId { get; set; }
     public DateOnly StartDate { get; set; }
@@ -13,9 +14,9 @@ public class AssociationDTO
 
     public AssociationDTO() { }
 
-    public AssociationDTO(long id, long colabId, long projectId, DateOnly startDate, DateOnly endDate, bool fundamental)
+    public AssociationDTO(long associationId, long colabId, long projectId, DateOnly startDate, DateOnly endDate, bool fundamental)
     {
-        Id = id;
+        AssociationId = associationId;
         ColaboratorId = colabId;
         ProjectId = projectId;
         StartDate = startDate;
@@ -46,10 +47,9 @@ public class AssociationDTO
 
     static public Association ToDomain(AssociationDTO associationDTO)
     {
-        Association association = new Association(associationDTO.ColaboratorId, associationDTO.ProjectId, associationDTO.StartDate, associationDTO.EndDate, associationDTO.Fundamental);
+        Association association = new Association(associationDTO.AssociationId, associationDTO.ColaboratorId, associationDTO.ProjectId, associationDTO.StartDate,
+                                        associationDTO.EndDate, associationDTO.Fundamental);
 
-        association.Id = associationDTO.Id;
-        
         return association;
     }
 }
