@@ -63,6 +63,7 @@ builder.Services.AddTransient<ProjectService>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationConsumerController>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQProjectConsumerController>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQColaboratorConsumerController>();
+//builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationPendingConsumerController>();
 
 var app = builder.Build();
 

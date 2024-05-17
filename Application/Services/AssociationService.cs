@@ -40,7 +40,7 @@ public class AssociationService
         return null;
     }
 
-        public async Task<IEnumerable<AssociationDTO>> GetByColabId(long id)
+    public async Task<IEnumerable<AssociationDTO>> GetByColabId(long id)
     {
         IEnumerable<Association> association = await _associationRepository.GetAssociationsByColabIdAsync(id);
 
@@ -79,9 +79,29 @@ public class AssociationService
         }
     }
 
+    public async Task<AssociationDTO> Update(AssociationDTO associationDTO, List<string> errorMessages)
+    {
+        try
+        {
+            Association association = AssociationDTO.ToDomain(associationDTO);
+            bool exists = await VerifyAssociation(associationDTO, errorMessages);
+            if (!exists)
+            {
+                return null;
+            }
+            Association associationSaved = await _associationRepository.Update(association);
+            AssociationDTO assoDTO = AssociationDTO.ToDTO(associationSaved);
+            return assoDTO;
+        }
+        catch (ArgumentException ex)
+        {
+            errorMessages.Add(ex.Message);
+            return null;
+        }
+    }
+
     private async Task<bool> VerifyAssociation(AssociationDTO associationDTO, List<string> errorMessages)
     {
-
         Association association = AssociationDTO.ToDomain(associationDTO);
         // Verifica se a associação já existe com base nos detalhes fornecidos
         bool aExists = await _associationRepository.AssociationExists(association);
@@ -90,7 +110,6 @@ public class AssociationService
             errorMessages.Add("Association already exists.");
             return false;
         }
-
         // Verifica se o colaborador existe
         bool colabExists = await _colaboratorsRepository.ColaboratorExists(associationDTO.ColaboratorId);
         if (!colabExists)
@@ -98,7 +117,6 @@ public class AssociationService
             errorMessages.Add("Colaborator doesn't exist.");
             return false;
         }
-
         // Verifica se o projeto existe
         bool projectExists = await _projectRepository.ProjectExists(associationDTO.ProjectId);
         if (!projectExists)
@@ -106,7 +124,6 @@ public class AssociationService
             errorMessages.Add("Project doesn't exist.");
             return false;
         }
-
         // Verifica se as datas da associação correspondem ao projeto
         if (!await CheckDates(associationDTO))
         {
@@ -119,19 +136,14 @@ public class AssociationService
             errorMessages.Add("Colaborator already has an association in this period.");
             return false;
         }
-
-        // Se todas as verificações passarem, retorna true
         return true;
     }
-
 
     private async Task<bool> CheckDates(AssociationDTO associationDTO)
     {
         Project p = await _projectRepository.GetProjectsByIdAsync(associationDTO.ProjectId);
-
         DateOnly startProject = p.StartDate;
         DateOnly? endProject = p.EndDate;
-
         DateOnly startAssociation = associationDTO.StartDate;
         DateOnly endAssociation = associationDTO.EndDate;
 
@@ -146,15 +158,12 @@ public class AssociationService
         {
             return true;
         }
-
-
         return false;
     }
 
-        private async Task<bool> CheckDatesAssociation(AssociationDTO associationDTO)
+    private async Task<bool> CheckDatesAssociation(AssociationDTO associationDTO)
     {
         IEnumerable<Association> associations = await _associationRepository.GetAssociationsByColabIdInPeriodAsync(associationDTO.ColaboratorId, associationDTO.StartDate, associationDTO.EndDate);
-
         foreach (var association in associations)
         {
             if (((associationDTO.StartDate >= association.StartDate &&
@@ -165,7 +174,6 @@ public class AssociationService
                 return true;
             }
         }
-
         return false;
     }
 }

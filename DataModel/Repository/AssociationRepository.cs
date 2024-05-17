@@ -65,7 +65,7 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
                     .Include(p => p.Project)
                     .ToListAsync();
 
-         IEnumerable<Association> associations = _associationMapper.ToDomain(associationDataModels);
+            IEnumerable<Association> associations = _associationMapper.ToDomain(associationDataModels);
 
             return associations;
         }
@@ -74,7 +74,7 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
             return null;
         }
     }
-    
+
     public async Task<Association> Add(Association association)
     {
         try
@@ -95,6 +95,29 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
             AssociationDataModel associationDataModelSaved = associationDataModelEntityEntry.Entity;
 
             Association associationSaved = _associationMapper.ToDomain(associationDataModelSaved);
+
+            return associationSaved;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+    public async Task<Association> Update(Association association)
+    {
+        try
+        {
+            ProjectDataModel projectDataModel = await _context.Set<ProjectDataModel>()
+                .FirstAsync(p => p.Id == association.ProjectId);
+            ColaboratorsIdDataModel colaboratorDataModel = await _context.Set<ColaboratorsIdDataModel>()
+                .FirstAsync(c => c.Id == association.ColaboratorId);
+
+            AssociationDataModel associationDataModel = _associationMapper.ToDataModel(association, projectDataModel, colaboratorDataModel);
+            EntityEntry<AssociationDataModel> associationDataModelEntityEntry = _context.Set<AssociationDataModel>().Update(associationDataModel);
+
+            await _context.SaveChangesAsync();
+            AssociationDataModel associationDataModelSaved = associationDataModelEntityEntry.Entity;
+            Association associationSaved = _associationMapper.ToDomain(associationDataModel);
 
             return associationSaved;
         }

@@ -7,6 +7,7 @@ namespace Domain.Model
         private long _colaboratorId;
         private long _projectId;
         private Period _period;
+        private bool _isPendent;
         private bool _fundamental;
 
 
@@ -42,13 +43,16 @@ namespace Domain.Model
 
         public Period Period { get { return _period; } set { _period = value; } }
 
-        public Association(long associationId, long colaboratorId, long projectId, DateOnly periodStart, DateOnly periodEnd, bool fundamental)
+        public bool IsPendent { get { return _isPendent; } set { _isPendent = value; } }
+
+        public Association(long associationId, long colaboratorId, long projectId, DateOnly periodStart, DateOnly periodEnd, bool fundamental, bool isPendent = true)
         {
             _associationId = associationId;
             _colaboratorId = colaboratorId;
             _projectId = projectId;
             _period = new Period(periodStart, periodEnd);
             _fundamental = fundamental;
+            _isPendent = isPendent;
         }
 
         public void UpdatePeriod(DateOnly startDate, DateOnly endDate)
