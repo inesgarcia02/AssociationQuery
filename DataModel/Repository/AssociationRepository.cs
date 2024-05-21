@@ -148,4 +148,24 @@ public class AssociationRepository : GenericRepository<Association>, IAssociatio
                 a.StartDate == association.StartDate &&
                 a.EndDate == association.EndDate);
     }
+
+      public async Task<IEnumerable<Association>> GetAssociationsByProjectIdAsync(long id)
+    {
+        try
+        {
+            IEnumerable<AssociationDataModel> associationsDataModel = await _context.Set<AssociationDataModel>()
+                    .Include(c => c.ColaboratorId)
+                    .Include(p => p.Project)
+                    .Where(c => c.Project.Id==id)
+                    .ToListAsync();
+ 
+            IEnumerable<Association> associations = _associationMapper.ToDomain(associationsDataModel);
+ 
+            return associations;
+        }
+        catch
+        {
+            throw;
+        }
+    }
 }

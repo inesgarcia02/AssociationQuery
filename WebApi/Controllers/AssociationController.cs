@@ -55,5 +55,19 @@ namespace WebApi.Controllers
 
             return Ok(associationDTO);
         }
+        // GET: api/Association/ByProject/1
+        [HttpGet("ByProject/{projectId}")]
+        public async Task<ActionResult<IEnumerable<AssociationDTO>>> GetAssociationsByProjectId(long projectId)
+        {
+            IEnumerable<AssociationDTO> associationsDTO = await _associationService.GetByProjectId(projectId);
+            Console.WriteLine("Fetching associations for projectId: " + projectId);
+
+            if (associationsDTO == null)
+            {
+                return NotFound();
+            }
+            return Ok(associationsDTO);
+        }
     }
+
 }

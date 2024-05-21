@@ -176,4 +176,13 @@ public class AssociationService
         }
         return false;
     }
+
+    public async Task<IEnumerable<AssociationDTO>> GetByProjectId(long id)
+    {
+        IEnumerable<Association> association = await _associationRepository.GetAssociationsByProjectIdAsync(id);
+ 
+        IEnumerable<AssociationDTO> associationsDTO = AssociationDTO.ToDTO(association);
+ 
+        return associationsDTO;
+    }
 }

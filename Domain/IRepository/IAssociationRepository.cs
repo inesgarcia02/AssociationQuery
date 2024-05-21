@@ -11,4 +11,5 @@ public interface IAssociationRepository : IGenericRepository<Association>
     Task<IEnumerable<Association>> GetAssociationsByColabIdInPeriodAsync(long colabId, DateOnly startDate, DateOnly endDate);
     Task<IEnumerable<Association>> GetAssociationsByColabIdAsync(long id);
     Task<Association> Update(Association association);
+    Task<IEnumerable<Association>> GetAssociationsByProjectIdAsync(long id);
 }
