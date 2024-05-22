@@ -14,11 +14,13 @@ namespace Domain.Tests
             // arrange
             DateOnly startDate = new DateOnly(2024, 3, 1);
             DateOnly endDate = new DateOnly(2024, 5, 31);
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
+            bool fundamental = true;
 
             // act
-            Association a = new Association(colaboratorId, projectId, startDate, endDate);
+            Association a = new Association(assocId, colaboratorId, projectId, startDate, endDate, fundamental);
 
             // assert
             Assert.NotNull(a);
@@ -34,10 +36,12 @@ namespace Domain.Tests
             // arrange
             DateOnly startDate = new DateOnly(2024, 3, 1);
             DateOnly endDate = new DateOnly(2024, 5, 31);
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
+            bool fundamental = true;
 
-            Association association = new Association(colaboratorId, projectId, startDate, endDate);
+            Association association = new Association(assocId, colaboratorId, projectId, startDate, endDate, fundamental);
 
             // act
             bool actual = association.IsColaboratorInAssociation(id);
@@ -53,10 +57,12 @@ namespace Domain.Tests
             // arrange
             DateOnly startDate = new DateOnly(2024, 3, 1);
             DateOnly endDate = new DateOnly(2024, 5, 31);
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
+            bool fundamental = true;
 
-            Association association = new Association(colaboratorId, projectId, startDate, endDate);
+            Association association = new Association(assocId, colaboratorId, projectId, startDate, endDate, fundamental);
 
             // act
             bool actual = association.IsColaboratorInAssociation(id);
@@ -85,9 +91,11 @@ namespace Domain.Tests
             DateOnly startAssociation = new DateOnly(2024, 7, 1);
             DateOnly endAssociation = new DateOnly(2024, 7, 15);
 
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
-            Association association = new Association(colaboratorId, projectId, startAssociation, endAssociation);
+            bool fundamental = true;
+            Association association = new Association(assocId, colaboratorId, projectId, startDate, endDate, fundamental);
 
             // act
             bool actual = association.IsAssociationInPeriod(startDate, endDate);
@@ -111,9 +119,11 @@ namespace Domain.Tests
             DateOnly startAssociation = new DateOnly(2024, 7, 1);
             DateOnly endAssociation = new DateOnly(2024, 7, 15);
 
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
-            Association association = new Association(colaboratorId, projectId, startAssociation, endAssociation);
+            bool fundamental = true;
+            Association association = new Association(assocId, colaboratorId, projectId, startAssociation, endAssociation, fundamental);
 
             // act
             bool actual = association.IsAssociationInPeriod(startDate, endDate);
@@ -146,10 +156,12 @@ namespace Domain.Tests
             DateOnly startAssociation = new DateOnly(2024, 2, 1);
             DateOnly endAssociation = new DateOnly(2024, 4, 30);
 
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
+            bool fundamental = true;
 
-            Association association = new Association(colaboratorId, projectId, startAssociation, endAssociation);
+            Association association = new Association(assocId, colaboratorId, projectId, startAssociation, endAssociation, fundamental);
 
             // act
             var datesFinal = association.GetDatesAssociationInPeriod(startDate, endDate);
@@ -174,10 +186,12 @@ namespace Domain.Tests
 
             DateOnly startAssociation = new DateOnly(2020, 3, 1);
             DateOnly endAssociation = new DateOnly(2020, 5, 31);
+            long assocId = 1;
             long colaboratorId = 1;
             long projectId = 1;
+            bool fundamental = true;
 
-            Association association = new Association(colaboratorId, projectId, startAssociation, endAssociation);
+            Association association = new Association(assocId, colaboratorId, projectId, startAssociation, endAssociation, fundamental);
 
             // act
             var datesFinal = association.GetDatesAssociationInPeriod(startDate, endDate);

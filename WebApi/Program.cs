@@ -13,7 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var queueName = config["Queues:" + args[0]];
 
-var port = GetPortForQueue(queueName);
+// var port = GetPortForQueue(queueName);
+
+var port = config["Ports:" + args[0]];
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -91,9 +93,11 @@ app.MapControllers();
 
 app.Run($"https://localhost:{port}");
 
-static int GetPortForQueue(string queueName)
-{
-    int basePort = 5040;
-    int queueIndex = int.Parse(queueName.Substring(2)); // Extract the numeric part of the queue name
-    return basePort + queueIndex;
-}
+// static int GetPortForQueue(string queueName)
+// {
+//     int basePort = 5040;
+//     int queueIndex = int.Parse(queueName.Substring(2));
+//     return basePort + queueIndex;
+// }
+
+public partial class Program{ }
