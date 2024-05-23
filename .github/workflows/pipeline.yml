@@ -1,0 +1,79 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Cache .NET packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore AssociationQ.sln
+
+      - name: Build
+        run: dotnet build AssociationQ.sln --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: dotnet test AssociationQ.sln --filter FullyQualifiedName~Domain.Tests --configuration Release
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results/
+
+# Uncomment and modify the following block to add the integration test step
+#  integration-tests:
+#    runs-on: ubuntu-latest
+#
+#    needs: build
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: Set up .NET Core SDK
+#        uses: actions/setup-dotnet@v3
+#        with:
+#          dotnet-version: '8.0.x'
+#
+#      - name: Cache .NET packages
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/.nuget/packages
+#          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+#          restore-keys: |
+#            ${{ runner.os }}-nuget-
+#
+#      - name: Restore dependencies
+#        run: dotnet restore AssociationQ.sln
+#
+#      - name: Run Integration Tests
+#        run: dotnet test AssociationQ.sln --no-build --filter FullyQualifiedName~IntegrationTests --configuration Release
+#
+#      - name: Upload Integration Test Results
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: integration-test-results
+#          path: test-results/
+
+
