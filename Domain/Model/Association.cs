@@ -87,7 +87,7 @@ namespace Domain.Model
 
         public bool IsAssociationInPeriod(DateOnly startDate, DateOnly endDate)
         {
-            if (StartDate >= startDate && StartDate <= endDate ||
+            if (StartDate >= startDate && EndDate <= endDate ||
             StartDate <= startDate && EndDate > startDate ||
             StartDate < endDate && EndDate >= endDate)
             {
