@@ -11,9 +11,16 @@ using WebApi.Controllers;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
-var queueName = config["Queues:" + args[0]];
+string replicaNameArg = Array.Find(args, arg => arg.Contains("--replicaName"));
+string replicaName;
+if (replicaNameArg != null)
+    replicaName = replicaNameArg.Split('=')[1];
+else
+    replicaName = config.GetConnectionString("replicaName");
 
-var port = config["Ports:" + args[0]];
+var queueName = config["Queues:" + replicaName];
+
+var port = config["Ports:" + replicaName];
 
 // Add services to the container.
 builder.Services.AddControllers();
