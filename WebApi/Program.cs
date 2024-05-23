@@ -13,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var queueName = config["Queues:" + args[0]];
 
-// var port = GetPortForQueue(queueName);
-
 var port = config["Ports:" + args[0]];
 
 // Add services to the container.
