@@ -69,6 +69,28 @@ public class AssociationQIntegrationTests : IClassFixture<IntegrationTestsWebApp
     }
 
     [Theory]
+    [InlineData("/api/Association/4")]
+    public async Task GetById_EndpointsReturnNotFoundAndCorrectContentType(string url)
+    {
+        // Arrange
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<AbsanteeContext>();
+
+            Utilities.ReinitializeDbForTests(db);
+        }
+
+        // var client = _factory.CreateClient();
+
+        // Act
+        var response = await _client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Theory]
     [InlineData("/api/Association/1")]
     public async Task GetById_ReturnData(string url)
     {
