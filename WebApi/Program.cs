@@ -60,6 +60,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+// builder.Services.AddSingleton<IConnectionFactory>(new ConnectionFactory() { Uri = new Uri("amqp://guest:guest@localhost:5672") });
+
 builder.Services.AddSingleton<IConnectionFactory>(sp =>
 {
     return new ConnectionFactory()
@@ -116,12 +118,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run($"https://localhost:{port}");
-
-// static int GetPortForQueue(string queueName)
-// {
-//     int basePort = 5040;
-//     int queueIndex = int.Parse(queueName.Substring(2));
-//     return basePort + queueIndex;
-// }
 
 public partial class Program{ }

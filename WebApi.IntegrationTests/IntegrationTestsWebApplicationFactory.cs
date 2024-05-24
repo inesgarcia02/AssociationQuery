@@ -1,16 +1,12 @@
 ﻿using System.Data.Common;
 using DataModel.Repository;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
 using Testcontainers.RabbitMq;
-using WebApi.Controllers;
 
 namespace WebApi.IntegrationTests;
 

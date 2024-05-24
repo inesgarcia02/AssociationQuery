@@ -1,8 +1,6 @@
 using System.Text.Json;
 using DataModel.Repository;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using NuGet.Protocol;
 using WebApi.IntegrationTests.Helpers;
 
 namespace WebApi.IntegrationTests;
