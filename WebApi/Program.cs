@@ -6,6 +6,7 @@ using Domain.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using WebApi.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,11 @@ else
 var queueName = config["Queues:" + replicaName];
 
 var port = config["Ports:" + replicaName];
+
+var rabbitMqHost = config["RabbitMq:Host"];
+var rabbitMqPort = config["RabbitMq:Port"];
+var rabbitMqUser = config["RabbitMq:UserName"];
+var rabbitMqPass = config["RabbitMq:Password"];
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -54,6 +60,17 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddSingleton<IConnectionFactory>(sp =>
+{
+    return new ConnectionFactory()
+    {
+        HostName = rabbitMqHost,
+        Port = int.Parse(rabbitMqPort),
+        UserName = rabbitMqUser,
+        Password = rabbitMqPass
+    };
+});
+
 builder.Services.AddTransient<IAssociationRepository, AssociationRepository>();
 builder.Services.AddTransient<IAssociationFactory, AssociationFactory>();
 builder.Services.AddTransient<AssociationMapper>();
@@ -72,7 +89,15 @@ builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQProjectConsum
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQColaboratorConsumerController>();
 //builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationPendingConsumerController>();
 
+
 var app = builder.Build();
+
+var rabbitMQConsumerServices = app.Services.GetServices<IRabbitMQConsumerController>();
+foreach (var service in rabbitMQConsumerServices)
+{
+    service.ConfigQueue(queueName);
+    service.StartConsuming();
+};
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -87,12 +112,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-var rabbitMQConsumerServices = app.Services.GetServices<IRabbitMQConsumerController>();
-foreach (var service in rabbitMQConsumerServices)
-{
-    service.ConfigQueue(queueName);
-    service.StartConsuming();
-};
 
 app.MapControllers();
 

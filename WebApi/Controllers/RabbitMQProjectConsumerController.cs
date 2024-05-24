@@ -9,15 +9,15 @@ namespace WebApi.Controllers
     {
         private List<string> _errorMessages = new List<string>();
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ConnectionFactory _factory;
+        private readonly IConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private string _queueName;
 
-        public RabbitMQProjectConsumerController(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQProjectConsumerController(IServiceScopeFactory serviceScopeFactory, IConnectionFactory factory)
         {
             _serviceScopeFactory = serviceScopeFactory;
-            _factory = new ConnectionFactory { HostName = "localhost" };
+            _factory = factory;
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
 
