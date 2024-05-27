@@ -28,14 +28,21 @@ var rabbitMqPort = config["RabbitMq:Port"];
 var rabbitMqUser = config["RabbitMq:UserName"];
 var rabbitMqPass = config["RabbitMq:Password"];
 
+string DBConnectionString = config.GetConnectionString("PostgresConnection");
+
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AbsanteeContext>(opt =>
-    //opt.UseInMemoryDatabase("AbsanteeList")
-    //opt.UseSqlite("Data Source=AbsanteeDatabase.sqlite")
-    opt.UseSqlite(Host.CreateApplicationBuilder().Configuration.GetConnectionString(queueName))
-    );
+builder.Services.AddDbContext<AbsanteeContext>(option =>
+{
+    option.UseNpgsql(DBConnectionString);
+}, optionsLifetime: ServiceLifetime.Scoped);
+ 
+ 
+// builder.Services.AddDbContextFactory<AbsanteeContext>(options =>
+// {
+//     options.UseNpgsql(DBConnectionString);
+// });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -60,7 +67,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// builder.Services.AddSingleton<IConnectionFactory>(new ConnectionFactory() { Uri = new Uri("amqp://guest:guest@localhost:5672") });
 
 builder.Services.AddSingleton<IConnectionFactory>(sp =>
 {
@@ -89,7 +95,6 @@ builder.Services.AddTransient<ProjectService>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationConsumerController>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQProjectConsumerController>();
 builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQColaboratorConsumerController>();
-//builder.Services.AddSingleton<IRabbitMQConsumerController, RabbitMQAssociationPendingConsumerController>();
 
 
 var app = builder.Build();

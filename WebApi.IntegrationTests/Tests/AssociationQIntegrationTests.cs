@@ -114,6 +114,12 @@ public class AssociationQIntegrationTests : IClassFixture<IntegrationTestsWebApp
         Assert.True(jsonObject.ValueKind == JsonValueKind.Object, "Response body is not a JSON object");
 
         Assert.True(jsonObject.TryGetProperty("id", out JsonElement idElement), "Object does not have 'id' property");
+        Assert.True(jsonObject.TryGetProperty("colaboratorId", out JsonElement colabId), "Object does not have 'colabId' property");
+        Assert.True(jsonObject.TryGetProperty("projectId", out JsonElement projId), "Object does not have 'projId' property");
+        Assert.True(jsonObject.TryGetProperty("startDate", out JsonElement startDate), "Object does not have 'startDate' property");
+        Assert.True(jsonObject.TryGetProperty("endDate", out JsonElement endDate), "Object does not have 'endDate' property");
+        Assert.True(jsonObject.TryGetProperty("fundamental", out JsonElement fundamental), "Object does not have 'fundamental' property");
+        Assert.True(jsonObject.TryGetProperty("isPendent", out JsonElement pendent), "Object does not have 'pendent' property");
     }
 
 
