@@ -86,8 +86,6 @@ public class IntegrationTestsWebApplicationFactory<TProgram> : WebApplicationFac
 
         _rabbitHost = _rabbitMqContainer.Hostname;
         _rabbitPort = _rabbitMqContainer.GetMappedPublicPort(5672);
-
-        await Task.Delay(10000);
     }
 
     public async Task DisposeAsync()
